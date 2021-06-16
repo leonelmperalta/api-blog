@@ -36,4 +36,8 @@ public class PostService {
     public List<PostDTO> getPosts() {
         return mapToDTO(postRepository.findAll());
     }
+
+    public void createPost(Post post) {
+        postRepository.save(post);
+    }
 }

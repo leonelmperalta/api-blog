@@ -4,9 +4,7 @@ import com.leonelmperalta.api.blog.model.Post;
 import com.leonelmperalta.api.blog.service.PostService;
 import com.leonelmperalta.api.blog.service.util.PostDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +21,10 @@ public class PostController {
     @GetMapping
     public List<PostDTO> getPosts(){
         return postService.getPosts();
+    }
+
+    @PostMapping
+    public void createPost(@RequestBody Post post){
+        postService.createPost(post);
     }
 }
