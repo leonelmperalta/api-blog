@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class Category {
     @Id
     @SequenceGenerator(
-            name = "catogory_sequence",
-            sequenceName = "catogory_sequence",
+            name = "category_sequence",
+            sequenceName = "category_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
