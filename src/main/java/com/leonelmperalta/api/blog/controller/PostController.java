@@ -2,6 +2,7 @@ package com.leonelmperalta.api.blog.controller;
 
 import com.leonelmperalta.api.blog.model.Post;
 import com.leonelmperalta.api.blog.service.PostService;
+import com.leonelmperalta.api.blog.service.util.PostDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getPosts(){
+    public List<PostDTO> getPosts(){
         return postService.getPosts();
     }
 }
