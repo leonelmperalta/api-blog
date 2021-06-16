@@ -3,6 +3,7 @@ package com.leonelmperalta.api.blog.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="categories")
@@ -20,4 +21,6 @@ public class Category {
     )
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
+    private Set<Post> posts;
 }
