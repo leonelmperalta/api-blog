@@ -29,7 +29,6 @@ public class PostController {
         return postService.getPost(id);
     }
 
-
     @PostMapping
     public void createPost(@RequestBody Post post){
         postService.createPost(post);
@@ -41,4 +40,8 @@ public class PostController {
     }
 
     //TODO: Patch mapping
+    @PatchMapping(path = "/{id}")
+    public void updatePost(@PathVariable Long id, @RequestBody Post post){
+        postService.updatePost(id, post);
+    }
 }

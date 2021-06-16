@@ -1,12 +1,16 @@
 package com.leonelmperalta.api.blog.service;
 
+import com.leonelmperalta.api.blog.model.Category;
 import com.leonelmperalta.api.blog.model.Post;
+import com.leonelmperalta.api.blog.model.User;
 import com.leonelmperalta.api.blog.repository.PostRepository;
 import com.leonelmperalta.api.blog.service.util.PostDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,5 +64,39 @@ public class PostService {
                 }
         );
         return post;
+    }
+
+    @Transactional
+    public void updatePost(Long id, Post post) {
+        Post postToUpdate = postRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new IllegalStateException("Post with id: " + id + "not found");
+                }
+        );
+        String newTitle = post.getTitle();
+        String newContent = post.getContent();
+        String newImageUrl = post.getImageUrl();
+        LocalDate newCreationDate = post.getCreationDate();
+        User newUser = post.getUser();
+        Category newCategory = post.getCategory();
+
+        if(newTitle != null && newTitle.length() > 0){
+            postToUpdate.setTitle(newTitle);
+        }
+        if(newContent != null && newContent.length() > 0){
+            postToUpdate.setContent(newContent);
+        }
+        if(newImageUrl != null && newImageUrl.length() > 0){
+            postToUpdate.setImageUrl(newImageUrl);
+        }
+        if(newCreationDate != null){
+            postToUpdate.setCreationDate(newCreationDate);
+        }
+        if(newUser != null){
+            postToUpdate.setUser(newUser);
+        }
+        if(newCategory != null){
+            postToUpdate.setCategory(newCategory);
+        }
     }
 }
