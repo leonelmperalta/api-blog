@@ -3,10 +3,13 @@ package com.leonelmperalta.api.blog.service;
 import com.leonelmperalta.api.blog.model.Category;
 import com.leonelmperalta.api.blog.model.Post;
 import com.leonelmperalta.api.blog.model.User;
+import com.leonelmperalta.api.blog.repository.CategoryRepository;
 import com.leonelmperalta.api.blog.repository.PostRepository;
+import com.leonelmperalta.api.blog.repository.UserRepository;
 import com.leonelmperalta.api.blog.service.util.PostDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,11 +22,15 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
         this.modelMapper = new ModelMapper();
     }
 
@@ -41,8 +48,22 @@ public class PostService {
     public List<PostDTO> getPosts() {
         return mapToDTO(postRepository.findAll());
     }
+    public List<PostDTO> getPosts(String title, String category) {
+        return mapToDTO(postRepository.findByTitleAndCategoryName(title, category));
+    }
+    public List<PostDTO> getPostsByCategory(String category) {
+        return mapToDTO(postRepository.findByCategoryName(category));
+    }
+
+    public List<PostDTO> getPostsByTitle(String title) {
+        return mapToDTO(postRepository.findByTitle(title));
+    }
 
     public void createPost(Post post) {
+        Optional<User> user = userRepository.findByEmail(post.getUser().getEmail());
+        Optional<Category> category = categoryRepository.findByName(post.getCategory().getName());
+        user.ifPresent(post::setUser);
+        category.ifPresent(post::setCategory);
         postRepository.save(post);
     }
 
@@ -99,4 +120,5 @@ public class PostService {
             postToUpdate.setCategory(newCategory);
         }
     }
+
 }

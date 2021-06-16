@@ -20,8 +20,19 @@ public class PostController {
 
     //TODO: agregar soporte a parametros titulo y categoria
     @GetMapping
-    public List<PostDTO> getPosts(){
-        return postService.getPosts();
+    public List<PostDTO> getPosts(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value= "category", required = false) String category
+    ){
+        if(title == null && category == null){
+            return postService.getPosts();
+        } else if (title != null && category != null){
+            return postService.getPosts(title, category);
+        } else if (title != null){
+            return postService.getPostsByTitle(title);
+        } else {
+            return postService.getPostsByCategory(category);
+        }
     }
 
     @GetMapping(path="/{id}")
@@ -39,7 +50,6 @@ public class PostController {
         postService.deletePost(id);
     }
 
-    //TODO: Patch mapping
     @PatchMapping(path = "/{id}")
     public void updatePost(@PathVariable Long id, @RequestBody Post post){
         postService.updatePost(id, post);

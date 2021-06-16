@@ -23,6 +23,7 @@ public class User {
             generator = "user_sequence"
     )
     private Long id;
+    @Column(unique = true)
     private String email;
     private String password;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)

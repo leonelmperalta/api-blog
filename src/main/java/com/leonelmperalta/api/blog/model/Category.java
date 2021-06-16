@@ -23,6 +23,7 @@ public class Category {
             generator = "category_sequence"
     )
     private Long id;
+    @Column(unique = true)
     private String name;
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("category")
