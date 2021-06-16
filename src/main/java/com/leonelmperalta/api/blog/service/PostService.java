@@ -42,7 +42,6 @@ public class PostService {
         postRepository.save(post);
     }
 
-    //TODO: arreglar este metodo
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> {
             throw new IllegalStateException("Post with id: " + id + "not found");
@@ -52,5 +51,14 @@ public class PostService {
         post.deleteUser();
         post.deleteCategory();
         postRepository.delete(post);
+    }
+
+    public Post getPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> {
+                    throw new IllegalStateException("Post with id: " + id + "not found");
+                }
+        );
+        return post;
     }
 }

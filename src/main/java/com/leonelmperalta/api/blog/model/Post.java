@@ -33,6 +33,8 @@ public class Post {
     @EqualsAndHashCode.Exclude
     private User user;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("posts")
+    @EqualsAndHashCode.Exclude
     private Category category;
 
     @Transactional
