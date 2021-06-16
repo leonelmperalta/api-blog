@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -39,5 +40,17 @@ public class PostService {
 
     public void createPost(Post post) {
         postRepository.save(post);
+    }
+
+    //TODO: arreglar este metodo
+    public void deletePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> {
+            throw new IllegalStateException("Post with id: " + id + "not found");
+        });
+        post.getCategory().deletePost(post);
+        post.getUser().deletePost(post);
+        post.deleteUser();
+        post.deleteCategory();
+        postRepository.delete(post);
     }
 }

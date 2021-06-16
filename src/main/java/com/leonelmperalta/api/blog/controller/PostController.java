@@ -18,6 +18,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    //TODO: agregar soporte a parametros titulo y categoria
     @GetMapping
     public List<PostDTO> getPosts(){
         return postService.getPosts();
@@ -27,4 +28,11 @@ public class PostController {
     public void createPost(@RequestBody Post post){
         postService.createPost(post);
     }
+
+    @DeleteMapping(path="/{id}")
+    public void deletePost(@PathVariable  Long id){
+        postService.deletePost(id);
+    }
+
+    //TODO: Patch mapping
 }

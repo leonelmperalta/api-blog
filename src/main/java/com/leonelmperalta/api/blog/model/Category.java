@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,13 @@ public class Category {
     )
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("category")
     @EqualsAndHashCode.Exclude
     private Set<Post> posts;
+
+    @Transactional
+    public void deletePost(Post post){
+        this.posts.remove(post);
+    }
 }
