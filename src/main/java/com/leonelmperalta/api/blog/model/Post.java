@@ -18,6 +18,7 @@ import java.time.LocalDate;
 @SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id=?")
 @FilterDef(name="deletedPostFilter", parameters = @ParamDef(name="isDeleted", type = "boolean"))
 @Filter(name="deletedPostFilter",condition = "deleted = :isDeleted")
+@JsonIgnoreProperties("deleted")
 public class Post {
     @Id
     @SequenceGenerator(

@@ -106,7 +106,7 @@ public class PostService {
 
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> {
-            throw new IllegalStateException("Post with id: " + id + "not found");
+            throw new IllegalStateException("Post with id: " + id + " not found");
         });
         post.getCategory().deletePost(post);
         post.getUser().deletePost(post);
@@ -116,18 +116,22 @@ public class PostService {
     }
 
     public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(
+        Post post = postRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new IllegalStateException("Post with id: " + id + "not found");
+                    throw new IllegalStateException("Post with id: " + id + " not found");
                 }
         );
+        if(post.isDeleted()){
+            throw new IllegalStateException("Post with id: " + id + " is deleted");
+        }
+        return post;
     }
 
     @Transactional
     public void updatePost(Long id, Post post) {
         Post postToUpdate = postRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new IllegalStateException("Post with id: " + id + "not found");
+                    throw new IllegalStateException("Post with id: " + id + " not found");
                 }
         );
         String newTitle = post.getTitle();

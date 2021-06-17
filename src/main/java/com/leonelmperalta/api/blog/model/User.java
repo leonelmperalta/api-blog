@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name="users")
 @Data
+@JsonIgnoreProperties("password")
 public class User {
     @Id
     @SequenceGenerator(
