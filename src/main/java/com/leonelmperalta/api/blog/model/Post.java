@@ -2,6 +2,8 @@ package com.leonelmperalta.api.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -11,6 +13,8 @@ import java.time.LocalDate;
 @Table(name = "posts")
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Post {
     @Id
     @SequenceGenerator(
@@ -36,6 +40,7 @@ public class Post {
     @JsonIgnoreProperties("posts")
     @EqualsAndHashCode.Exclude
     private Category category;
+    private boolean deleted = Boolean.FALSE;
 
     @Transactional
     public void deleteUser(){
