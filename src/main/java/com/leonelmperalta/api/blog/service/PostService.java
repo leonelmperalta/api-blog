@@ -9,7 +9,6 @@ import com.leonelmperalta.api.blog.repository.UserRepository;
 import com.leonelmperalta.api.blog.service.util.PostDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -79,12 +78,11 @@ public class PostService {
     }
 
     public Post getPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(
+        return postRepository.findById(id).orElseThrow(
                 () -> {
                     throw new IllegalStateException("Post with id: " + id + "not found");
                 }
         );
-        return post;
     }
 
     @Transactional
@@ -114,10 +112,21 @@ public class PostService {
             postToUpdate.setCreationDate(newCreationDate);
         }
         if(newUser != null){
-            postToUpdate.setUser(newUser);
+            Optional<User> user = userRepository.findByEmail(newUser.getEmail());
+            if(user.isPresent()){
+                postToUpdate.setUser(user.get());
+            } else {
+                postToUpdate.setUser(newUser);
+            }
+
         }
         if(newCategory != null){
-            postToUpdate.setCategory(newCategory);
+            Optional<Category> category = categoryRepository.findByName(newCategory.getName());
+            if(category.isPresent()){
+                postToUpdate.setCategory(category.get());
+            } else {
+                postToUpdate.setCategory(newCategory);
+            }
         }
     }
 
