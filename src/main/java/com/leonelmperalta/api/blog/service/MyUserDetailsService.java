@@ -1,25 +1,38 @@
 package com.leonelmperalta.api.blog.service;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
+import com.leonelmperalta.api.blog.model.User;
+import com.leonelmperalta.api.blog.repository.UserRepository;
+import com.leonelmperalta.api.blog.service.util.MyUserDetail;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new User("foo","foo", new ArrayList<>());
+        User user = userRepository.findByEmail(username).orElseThrow(
+                () -> new UsernameNotFoundException("User with email: " + username + " not found")
+        );
+        return new MyUserDetail(user);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public User registerUser(String email, String password) {
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setPassword(bCryptPasswordEncoder.encode(password));
+        return userRepository.save(newUser);
     }
 }

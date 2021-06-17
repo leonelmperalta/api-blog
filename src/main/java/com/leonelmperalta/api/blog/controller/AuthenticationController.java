@@ -29,6 +29,11 @@ public class AuthenticationController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @PostMapping("/sign_up")
+    public ResponseEntity<?> signUp(@RequestBody UserDTO user){
+        return ResponseEntity.ok(userDetailsService.registerUser(user.getEmail(),user.getPassword()));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserDTO user) throws Exception {
         authenticate(user.getEmail(),user.getPassword());

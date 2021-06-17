@@ -96,6 +96,8 @@ public class PostService {
         return posts;
     }
 
+    //TODO: Tengo que arreglar que, cuando se crea un post con un usuario no registrado,
+    // que el mismo se registre en la BD mediante el userDetailService
     public void createPost(Post post) {
         Optional<User> user = userRepository.findByEmail(post.getUser().getEmail());
         Optional<Category> category = categoryRepository.findByName(post.getCategory().getName());
