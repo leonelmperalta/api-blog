@@ -2,10 +2,12 @@ package com.leonelmperalta.api.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 
@@ -14,7 +16,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @SQLDelete(sql = "UPDATE posts SET deleted = true WHERE id=?")
-@Where(clause = "deleted=false")
+@FilterDef(name="deletedPostFilter", parameters = @ParamDef(name="isDeleted", type = "boolean"))
+@Filter(name="deletedPostFilter",condition = "deleted = :isDeleted")
 public class Post {
     @Id
     @SequenceGenerator(

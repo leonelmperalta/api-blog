@@ -18,7 +18,6 @@ public class PostController {
         this.postService = postService;
     }
 
-    //TODO: agregar soporte a parametros titulo y categoria
     @GetMapping
     public List<PostDTO> getPosts(
             @RequestParam(value = "title", required = false) String title,
@@ -38,6 +37,11 @@ public class PostController {
     @GetMapping(path="/{id}")
     public Post getPost(@PathVariable Long id){
         return postService.getPost(id);
+    }
+
+    @GetMapping(path="/deleted")
+    public List<PostDTO> getDeletedPosts() {
+        return postService.getDeletedPosts();
     }
 
     @PostMapping

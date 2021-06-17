@@ -7,10 +7,13 @@ import com.leonelmperalta.api.blog.repository.CategoryRepository;
 import com.leonelmperalta.api.blog.repository.PostRepository;
 import com.leonelmperalta.api.blog.repository.UserRepository;
 import com.leonelmperalta.api.blog.service.util.PostDTO;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,12 +27,14 @@ public class PostService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final EntityManager entityManager;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CategoryRepository categoryRepository, EntityManager entityManager) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.entityManager = entityManager;
         this.modelMapper = new ModelMapper();
     }
 
@@ -44,18 +49,51 @@ public class PostService {
         return postsDTO;
     }
 
-    public List<PostDTO> getPosts() {
-        return mapToDTO(postRepository.findAll());
+    public void enableFilter(Session session, boolean isDeleted){
+        Filter filter = session.enableFilter("deletedPostFilter");
+        filter.setParameter("isDeleted", isDeleted);
+    }
+
+    public void disableFilter(Session session){
+        session.disableFilter("deletedPostFilter");
+    }
+
+    public List<PostDTO> getPosts(){
+        Session session = entityManager.unwrap(Session.class);
+        enableFilter(session, false);
+        List<PostDTO> posts = mapToDTO(postRepository.findAll());
+        disableFilter(session);
+        return posts;
     }
     public List<PostDTO> getPosts(String title, String category) {
-        return mapToDTO(postRepository.findByTitleAndCategoryName(title, category));
+        Session session = entityManager.unwrap(Session.class);
+        enableFilter(session, false);
+        List<PostDTO> posts = mapToDTO(postRepository.findByTitleAndCategoryName(title, category));
+        disableFilter(session);
+        return posts;
     }
     public List<PostDTO> getPostsByCategory(String category) {
-        return mapToDTO(postRepository.findByCategoryName(category));
+        Session session = entityManager.unwrap(Session.class);
+        enableFilter(session, false);
+        List<PostDTO> posts = mapToDTO(postRepository.findByCategoryName(category));
+        disableFilter(session);
+        return posts;
     }
 
     public List<PostDTO> getPostsByTitle(String title) {
-        return mapToDTO(postRepository.findByTitle(title));
+        Session session = entityManager.unwrap(Session.class);
+        enableFilter(session, false);
+        List<PostDTO> posts = mapToDTO(postRepository.findByTitle(title));
+        disableFilter(session);
+        return posts;
+    }
+
+    public List<PostDTO> getDeletedPosts() {
+        Session session = entityManager.unwrap(Session.class);
+        enableFilter(session, true);
+        List<PostDTO> posts = mapToDTO(postRepository.findAll());
+        disableFilter(session);
+        return posts;
     }
 
     public void createPost(Post post) {
